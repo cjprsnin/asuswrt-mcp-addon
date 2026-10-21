@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Export add-on options as ASUSWRT_* environment variables
+# ==============================================================================
+
+bashio::log.info "Preparing AsusWRT MCP environment"
+
+# Persist env for the service script (s6 / with-contenv)
+mkdir -p /var/run/s6/container_environment
+
+echo -n "$(bashio::config 'host')" > /var/run/s6/container_environment/ASUSWRT_HOST
+echo -n "$(bashio::config 'ssh_username')" > /var/run/s6/container_environment/ASUSWRT_SSH_USERNAME
+echo -n "$(bashio::config 'ssh_password')" > /var/run/s6/container_environment/ASUSWRT_SSH_PASSWORD
+echo -n "$(bashio::config 'ssh_port')" > /var/run/s6/container_environment/ASUSWRT_SSH_PORT
+echo -n "$(bashio::config 'timeout_seconds')" > /var/run/s6/container_environment/ASUSWRT_TIMEOUT_SECONDS
+
+if bashio::config.has_value 'ssh_key_file'; then
+  echo -n "$(bashio::config 'ssh_key_file')" > /var/run/s6/container_environment/ASUSWRT_SSH_KEY_FILE
+fi
+
+if bashio::config.true 'allow_mutations'; then
+  echo -n "true" > /var/run/s6/container_environment/ASUSWRT_ALLOW_MUTATIONS
+  bashio::log.warning "Mutations ENABLED — write tools require confirm=true"
+else
+  echo -n "false" > /var/run/s6/container_environment/ASUSWRT_ALLOW_MUTATIONS
+  bashio::log.info "Mutations disabled (read-only diagnosis)"
+fi

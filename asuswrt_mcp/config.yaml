@@ -1,0 +1,40 @@
+name: "AsusWRT MCP"
+version: "0.1.0"
+slug: asuswrt_mcp
+description: >-
+  SSH-only MCP server for AsusWRT / AsusWRT-Merlin. Lets local Home Assistant
+  LLMs diagnose and safely repair router configuration (DHCP, Wi-Fi, port
+  forwards, and more).
+url: "https://github.com/cjprsnin/asuswrt-mcp-addon"
+arch:
+  - aarch64
+  - amd64
+  - armv7
+init: false
+startup: application
+boot: auto
+host_network: true
+map:
+  - ssl:ro
+ports:
+  8765/tcp: 8765
+ports_description:
+  8765/tcp: MCP SSE endpoint for Home Assistant Model Context Protocol client
+options:
+  host: "192.168.1.1"
+  ssh_username: "admin"
+  ssh_password: ""
+  ssh_key_file: ""
+  ssh_port: 22
+  allow_mutations: false
+  timeout_seconds: 10
+  log_level: info
+schema:
+  host: str
+  ssh_username: str
+  ssh_password: password
+  ssh_key_file: str?
+  ssh_port: int(1,65535)
+  allow_mutations: bool
+  timeout_seconds: float(1,120)
+  log_level: list(debug|info|warning|error)
