@@ -5,11 +5,28 @@
 
 set -e
 
+# Export options directly — mcp-proxy's child Python must inherit these
+export ASUSWRT_HOST="$(bashio::config 'host')"
+export ASUSWRT_SSH_USERNAME="$(bashio::config 'ssh_username')"
+export ASUSWRT_USERNAME="$(bashio::config 'ssh_username')"
+export ASUSWRT_SSH_PASSWORD="$(bashio::config 'ssh_password')"
+export ASUSWRT_PASSWORD="$(bashio::config 'ssh_password')"
+export ASUSWRT_SSH_PORT="$(bashio::config 'ssh_port')"
+export ASUSWRT_TIMEOUT_SECONDS="$(bashio::config 'timeout_seconds')"
+
+if bashio::config.has_value 'ssh_key_file'; then
+  export ASUSWRT_SSH_KEY_FILE="$(bashio::config 'ssh_key_file')"
+fi
+
+if bashio::config.true 'allow_mutations'; then
+  export ASUSWRT_ALLOW_MUTATIONS="true"
+else
+  export ASUSWRT_ALLOW_MUTATIONS="false"
+fi
+
 bashio::log.info "Starting AsusWRT MCP SSE proxy on 0.0.0.0:8765"
 bashio::log.info "Router host=${ASUSWRT_HOST} user=${ASUSWRT_SSH_USERNAME} mutations=${ASUSWRT_ALLOW_MUTATIONS}"
 
-# mcp-proxy listens for SSE clients and spawns the stdio MCP server
-# Adjust flags if your mcp-proxy version uses different option names.
 exec /app/venv/bin/mcp-proxy \
   --host 0.0.0.0 \
   --port 8765 \
