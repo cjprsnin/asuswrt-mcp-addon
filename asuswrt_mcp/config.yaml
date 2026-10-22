@@ -1,5 +1,5 @@
 name: "AsusWRT MCP"
-version: "0.1.1"
+version: "0.1.2"
 slug: asuswrt_mcp
 description: >-
   SSH-only MCP server for AsusWRT / AsusWRT-Merlin. Lets local Home Assistant
@@ -21,7 +21,7 @@ ports:
 ports_description:
   8765/tcp: MCP SSE endpoint for Home Assistant Model Context Protocol client
 options:
-  host: "192.168.1.1"
+  host: "192.168.50.1"
   ssh_username: "admin"
   ssh_password: ""
   ssh_key_file: ""
